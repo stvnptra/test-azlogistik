@@ -29,7 +29,9 @@ export default function Home() {
   }, [products])
 
   function handleAddProduct(newProduct: Product) {
-    if (newProduct.id) {
+    const index = products.find((product) => product.id == newProduct.id)
+
+    if (index) {
       const index = products.findIndex((product) => product.id == newProduct.id)
       const updatedData = products.map((product, i) => { if (i == index) { return newProduct; } else { return product; } });
       setProducts(updatedData);
