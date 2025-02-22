@@ -17,12 +17,14 @@ interface FormInput {
     name: string;
     price: number;
     stock: number;
+    desc: string;
 }
 
 const schema = Yup.object().shape({
-    name: Yup.string().min(3, "Nama Produk harus memiliki minimal 3 karakter").required("Nama Produk wajib diisi"),
+    name: Yup.string().min(3, "Nama Produk harus memiliki minimal 3 karakter").required("Nama Produk wajib diisi").matches(/^[a-z\d\-_\s]+$/i, 'Harus berupa huruf'),
     price: Yup.number().typeError('Input harus berupa angka').min(1, "Harga Produk harus lebih dari 0").required("Harga Produk wajib diisi"),
     stock: Yup.number().typeError('Input harus berupa angka').min(1, "Stock Produk harus lebih dari 0").required("Stock Produk wajib diisi"),
+    desc: Yup.string().min(10, "Deskipsi harus minimal 10 karakter").required("Deskripsi wajib diisi").matches(/^[a-z\d\-_\s]+$/i, 'Harus berupa huruf'),
 });
 
 export default function ProductForm({ onAddProduct, data = {
@@ -30,6 +32,7 @@ export default function ProductForm({ onAddProduct, data = {
     name: "",
     price: 0,
     stock: 0,
+    desc: "",
 } }: ProductFormProps) {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormInput>({
         resolver: yupResolver(schema),
@@ -41,6 +44,7 @@ export default function ProductForm({ onAddProduct, data = {
             name: data.name,
             price: data.price,
             stock: data.stock,
+            desc: data.desc,
         };
         onAddProduct(newProduct);
     }
@@ -51,10 +55,12 @@ export default function ProductForm({ onAddProduct, data = {
             setValue("name", data[0].name);
             setValue("price", data[0].price);
             setValue("stock", data[0].stock);
+            setValue("desc", data[0].desc);
         } else {
             setValue("name", "");
             setValue("price", 0);
             setValue("stock", 0);
+            setValue("desc", "");
         }
     }, [data]);
 
@@ -83,6 +89,13 @@ export default function ProductForm({ onAddProduct, data = {
                         <input className="w-full" type="number" placeholder="Stok" {...register("stock")} />
                         <span className="text-xs text-red-600 font-medium capitalize">
                             {errors.stock && <p>{errors.stock.message}</p>}
+                        </span>
+                    </div>
+                    <div className="w-full flex gap-1 flex-col">
+                        <label className="text-sm font-semibold text-gray-800" htmlFor="name">Deskripsi Product</label>
+                        <input className="w-full" type="text" placeholder="Desc" {...register("desc")} />
+                        <span className="text-xs text-red-600 font-medium capitalize">
+                            {errors.desc && <p>{errors.desc.message}</p>}
                         </span>
                     </div>
                     <div className="flex items-center justify-end w-full">

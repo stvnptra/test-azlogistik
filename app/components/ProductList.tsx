@@ -16,7 +16,7 @@ export default function ProductList({ products, onDelete, onEdit, onAdd }: Produ
 
     const filteredProducts = React.useMemo(
         () => products.filter((product) =>
-            product.name.toLowerCase().includes(searchTerms)
+            product.price.toString().includes(searchTerms)
         ),
         [products, searchTerms]
     );
@@ -34,6 +34,10 @@ export default function ProductList({ products, onDelete, onEdit, onAdd }: Produ
             {
                 Header: 'Stok Produk',
                 accessor: 'stock'
+            },
+            {
+                Header: 'Desc Produk',
+                accessor: 'desc',
             },
             {
                 Header: 'Aksi',
@@ -104,17 +108,18 @@ export default function ProductList({ products, onDelete, onEdit, onAdd }: Produ
                         >
                             {headerGroup.headers.map((column: any) => (
                                 <th key={column.id} {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    className="p-3 rounded-y-lg text-gray-500 text-xs font-semibold uppercase tracking-tight text-left"
+                                    className={column.id === 'desc' ? 'hidden lg:block p-3 rounded-y-lg text-gray-500 text-xs font-semibold uppercase tracking-tight text-left' : `p-3 rounded-y-lg text-gray-500 text-xs font-semibold uppercase tracking-tight text-left`}
                                 >
                                     <div >
                                         {column.render('Header')}
 
-                                        <span   >
+                                        <span>
                                             {column.isSorted
                                                 ? column.isSortedDesc
                                                     ? ' 🔽'
                                                     : ' 🔼'
                                                 : ""}
+
                                         </span>
                                     </div>
                                 </th>
